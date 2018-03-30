@@ -1,5 +1,11 @@
 package com.priester.crawler.news.process;
-import org.apache.commons.io.FileUtils;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.priester.crawler.news.pojo.News;
+import com.priester.crawler.news.utils.StripHtmlUtil;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -8,35 +14,48 @@ import us.codecraft.webmagic.processor.PageProcessor;
 
 public class PageProcessorWith315 implements PageProcessor {
 
-    private Site site = Site.me().setRetryTimes(3).setSleepTime(1000).setTimeOut(10000);
+	private static final Logger logger = LoggerFactory.getLogger(PageProcessorWith315.class);
 
-    public void process(Page page) {
-        page.addTargetRequests(page.getHtml().links().regex("http://www.315online.com/survey/[0-9]{6}.html").all());
-//        page.addTargetRequests(page.getHtml().links().regex("(https://github\\.com/[\\w\\-])").all());
-//        page.putField("author", page.getUrl().regex("https://github\\.com/(\\w+)/.*").toString());
-//        page.putField("name", page.getHtml().xpath("//h1[@class='entry-title public']/strong/a/text()").toString());
-//        if (page.getResultItems().get("name")==null){
-//            //skip this page
-//            page.setSkip(true);
-//        }
-//        page.putField("readme", page.getHtml().xpath("//div[@id='readme']/tidyText()"));
-        
- 
-//        if(page.getHtml().links().regex("http://www.315online.com/tousu/redian/[0-9]{6}.html").match()) {
-        	System.out.println(page.getHtml().links().regex("http://www.315online.com/survey/[0-9]{6}.html").all());
-//        }
-    	
-    	page.putField("title", page.getHtml().xpath("//[@class='left_content']/h1/text()").toString());    	
-    	page.putField("content",page.getHtml().xpath("//[@class='content']").toString());
-    	
-//    	FileUtils.writeStringToFile(file, data, encoding);
-    }
+	private Site site = Site.me().setRetryTimes(3).setSleepTime(1000).setTimeOut(10000);
 
-    public Site getSite() {
-        return site;
-    }
+	public void process(Page page) {
+		
+		page.addTargetRequests(page.getHtml().links().regex("http://www.315online.com/tousu/redian/list_267_[0-9]{1,2}.html").all());
+		
+		if (page.getUrl().regex("http://www.315online.com/tousu/redian/(list_267_[0-9]{1,2}|index).html").match()){
+			page.addTargetRequests(page.getHtml().links().regex("http://www.315online.com/tousu/redian/[0-9]{6}.html").all());
+//			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//			System.out.println(page.getUrl());
+//			System.out.println("***********");
+//			System.out.println(page.getHtml().links().regex("http://www.315online.com/tousu/redian/[0-9]{6}.html").all().toString());
+//			System.out.println("***********");
+		}
 
-    public static void main(String[] args) {
-        Spider.create(new PageProcessorWith315()).addUrl("http://www.315online.com/tousu/redian/382630.html").thread(1).run();
-    }
+		if (page.getUrl().regex("http://www.315online.com/survey/[0-9]{6}.html").match()) {
+			String title = page.getHtml().xpath("//[@class='left_content']/h1/text()").toString();
+			String content = StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='content']").toString());
+			String url = page.getUrl().toString();
+
+			if (StringUtils.isNotEmpty(title)) {
+				News news = new News(title, content, "12315_热点投诉", url,"");
+				try {
+					JdbcSave.save(news);
+					// System.out.println(content);
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error("error page: " + url);
+				}
+			}
+		}
+
+	}
+
+	public Site getSite() {
+		return site;
+	}
+
+	public static void main(String[] args) {
+		Spider.create(new PageProcessorWith315()).addUrl("http://www.315online.com/tousu/redian/index.html")
+				.thread(1).run();
+	}
 }

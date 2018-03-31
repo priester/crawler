@@ -39,7 +39,7 @@ public class PageProcessorWith315 implements PageProcessor {
 			if (StringUtils.isNotEmpty(title)) {
 				News news = new News(title, content, "12315_热点投诉", url,"");
 				try {
-					JdbcSave.save(news);
+					JdbcProcess.save(news);
 					// System.out.println(content);
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -38,7 +38,7 @@ public class PageProcessorWithLanzhouwang implements PageProcessor {
 			if (StringUtils.isNotEmpty(title)) {
 				News news = new News(title, content, "中国小企业兰州网", url, introduce);
 				try {
-					JdbcSave.save(news);
+					JdbcProcess.save(news);
 //					 logger.info(news.toString());
 				} catch (Exception e) {
 					e.printStackTrace();

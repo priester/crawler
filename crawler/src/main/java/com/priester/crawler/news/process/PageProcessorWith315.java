@@ -20,7 +20,7 @@ public class PageProcessorWith315 implements PageProcessor {
 
 	public void process(Page page) {
 		
-		page.addTargetRequests(page.getHtml().links().regex("http://www.315online.com/tousu/redian/list_267_[0-9]{1,2}.html").all());
+//		page.addTargetRequests(page.getHtml().links().regex("http://www.315online.com/tousu/redian/list_267_[0-9]{1,2}.html").all());
 		
 		if (page.getUrl().regex("http://www.315online.com/tousu/redian/(list_267_[0-9]{1,2}|index).html").match()){
 			page.addTargetRequests(page.getHtml().links().regex("http://www.315online.com/tousu/redian/[0-9]{6}.html").all());
@@ -39,8 +39,8 @@ public class PageProcessorWith315 implements PageProcessor {
 			if (StringUtils.isNotEmpty(title)) {
 				News news = new News(title, content, "12315_热点投诉", url,"");
 				try {
-					JdbcProcess.save(news);
-					// System.out.println(content);
+//					JdbcProcess.save(news);
+					logger.info(news.getTitle());
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error("error page: " + url);

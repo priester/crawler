@@ -26,7 +26,7 @@ public class PageProcessorWithLanzhouwang implements PageProcessor {
 		if (page.getUrl().regex("http://www.smelzh.gov.cn/qyxw/list.php\\?catid=32").match()
 				|| page.getUrl().regex("http://www.smelzh.gov.cn/qyxw/list.php\\?catid=32.*").match()) {
 			page.addTargetRequests(
-					page.getHtml().links().regex("http://www.smelzh.gov.cn/qyxw/show.php\\?itemid=[0-9]{5}").all());
+					page.getHtml().xpath("//[@class='catlist']").links().regex("http://www.smelzh.gov.cn/qyxw/show.php\\?itemid=[0-9]{5}").all());
 		}
 
 		if (page.getUrl().regex("http://www.smelzh.gov.cn/qyxw/show.php\\?itemid=[0-9]{5}").match()) {
@@ -38,7 +38,7 @@ public class PageProcessorWithLanzhouwang implements PageProcessor {
 			if (StringUtils.isNotEmpty(title)) {
 				News news = new News(title, content, "中国小企业兰州网", url, introduce);
 				try {
-					JdbcProcess.save(news);
+//					JdbcProcess.save(news);
 //					 logger.info(news.toString());
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -20,24 +20,24 @@ public class PageProcessorWithLanchang implements PageProcessor {
 
 	public void process(Page page) {
 
-		page.addTargetRequests(
-				page.getHtml().links().regex("http://www.ncnews.com.cn/hd/ncyl/bgl/[0-9]{6}/t[0-9]{8}_[0-9]{6}.html").all());
+		page.addTargetRequests(page.getHtml().links()
+				.regex("http://www.ncnews.com.cn/hd/ncyl/bgl/[0-9]{6}/t[0-9]{8}_[0-9]{6}.html").all());
 
-
-//		http://www.ncnews.com.cn/hd/ncyl/bgl/201606/t20160612_198790.html
+		// http://www.ncnews.com.cn/hd/ncyl/bgl/201606/t20160612_198790.html
 		if (page.getUrl().regex("http://www.ncnews.com.cn/hd/ncyl/bgl/[0-9]{6}/t[0-9]{8}_[0-9]{6}.html").match()) {
 			System.out.println(page.getHtml());
 			String title = page.getHtml().xpath("//[@class='read']/h3/text()").toString();
-//			System.out.println(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
-			String content = StripHtmlUtil.stripHtml(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
+			// System.out.println(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
+			String content = StripHtmlUtil.stripHtml(StripHtmlUtil
+					.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
 			String url = page.getUrl().toString();
 			String introduce = "";
 
 			if (StringUtils.isNotEmpty(title)) {
-				News news = new News(title, content, "南昌新闻网_曝光栏", url, introduce);
+				News news = new News(title, content, "南昌新闻网", url, introduce);
 				try {
-//					JdbcProcess.save(news);
-					 logger.info(news.toString());
+					JdbcProcess.save(news);
+					// logger.info(news.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error("error page: " + url);
@@ -52,9 +52,11 @@ public class PageProcessorWithLanchang implements PageProcessor {
 	}
 
 	public static void main(String[] args) {
-		for(int i = 1;i<6;i++) { 
-		Spider.create(new PageProcessorWithLanchang()).addUrl("http://www.ncnews.com.cn/hd/ncyl/bgl/")
-				.thread(1).run();
+		Spider.create(new PageProcessorWithLanchang())
+		.addUrl("http://www.ncnews.com.cn/hd/ncyl/bgl/index.html").thread(1).run();
+		for (int i = 1; i < 6; i++) {
+			Spider.create(new PageProcessorWithLanchang())
+					.addUrl("http://www.ncnews.com.cn/hd/ncyl/bgl/index_" + i + ".html").thread(1).run();
 		}
 	}
 }

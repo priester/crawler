@@ -14,6 +14,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 
 /**
  * 中国化工报
+ * 
  * @author Administrator
  *
  */
@@ -25,30 +26,28 @@ public class PageProcessorWithZGHGB implements PageProcessor {
 
 	public void process(Page page) {
 
-		
-		page.addTargetRequests(
-					page.getHtml().links().regex("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp.id=6.pn=[0-9]{1,2}").all());
-		
-		page.addTargetRequests(
-				page.getHtml().links().regex("http://www.ccin.com.cn/ccin/news/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9]{6}.shtml").all());
+		page.addTargetRequests(page.getHtml().links()
+				.regex("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp.id=6.pn=[0-9]{1,2}").all());
 
-		
-		System.out.println(
-				page.getHtml().links().regex("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp.id=6.pn=[0-9]{1,2}"));
-
+		if (page.getUrl().regex("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp.id=6.pn=[0-9]{1,2}").match()) {
+//			home_lb
+			page.addTargetRequests(page.getHtml().xpath("//[@class='home_lb']").links()
+					.regex("http://www.ccin.com.cn/ccin/news/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9]{6}.shtml").all());
+		}
 		if (page.getUrl().regex("http://www.ccin.com.cn/ccin/news/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9]{6}.shtml").match()) {
-//			System.out.println(page.getHtml());
+			// System.out.println(page.getHtml());
 			String title = page.getHtml().xpath("//[@class='news_con_tit']/h2/text()").toString();
-//			System.out.println(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
-			String content = StripHtmlUtil.stripHtml(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='con']").toString()));
+			// System.out.println(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
+			String content = StripHtmlUtil
+					.stripHtml(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='con']").toString()));
 			String url = page.getUrl().toString();
 			String introduce = "";
 
 			if (StringUtils.isNotEmpty(title)) {
 				News news = new News(title, content, "中国化工报", url, introduce);
 				try {
-//					JdbcProcess.save(news);
-					 logger.info(news.toString());
+					 JdbcProcess.save(news);
+					// logger.info(news.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error("error page: " + url);
@@ -63,9 +62,9 @@ public class PageProcessorWithZGHGB implements PageProcessor {
 	}
 
 	public static void main(String[] args) {
-	
-		Spider.create(new PageProcessorWithZGHGB()).addUrl("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp?id=6&pn=1")
-				.thread(1).run();
-		
+
+		Spider.create(new PageProcessorWithZGHGB())
+				.addUrl("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp?id=6&pn=1").thread(1).run();
+
 	}
 }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.priester.crawler.news.dto.JdbcProcess;
 import com.priester.crawler.news.pojo.News;
 import com.priester.crawler.news.utils.StripHtmlUtil;
 
@@ -41,7 +42,7 @@ public class PageProcessorWithzgxww implements PageProcessor {
 				page.getHtml().xpath("//[@class='left").links().regex("http://www.ce.cn/cysc/sp/info/[0-9]{6}/[0-9]{2}/t[0-9]{8}_[0-9]{6,8}.shtml").all());
 		}
 
-		if (page.getUrl().regex("http://www.ce.cn/cysc/sp/info/[0-9]{6}/[0-9]{2}/t[0-9]{8}_[0-9]{8}.shtml").match()) {
+		if (page.getUrl().regex("http://www.ce.cn/cysc/sp/info/[0-9]{6}/[0-9]{2}/t[0-9]{8}_[0-9]{6,8}.shtml").match()) {
 //			
 			String title = page.getHtml().xpath("//[@class='neirong']/form/h1/text()").toString();
 //			System.out.println(title);
@@ -70,14 +71,18 @@ public class PageProcessorWithzgxww implements PageProcessor {
 		return site;
 	}
 
-	public static void main(String[] args) {
+	public static void Crawlers() {
 	
 //		Spider.create(new PageProcessorWithzgxww()).addUrl("http://www.ce.cn/cysc/sp/baoguantai/index.shtml")
 //				.thread(1).run();
-		for(int i = 1;i < 16;i++) {
+		for(int i = 2;i < 16;i++) {
 			Spider.create(new PageProcessorWithzgxww()).addUrl("http://www.ce.cn/cysc/sp/baoguantai/index_"+i+".shtml")
-			.thread(1).run();
+			.thread(10).run();
 		}
 		
+	}
+	
+	public static void main(String[] args) {
+		Crawlers();
 	}
 }

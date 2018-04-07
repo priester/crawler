@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.priester.crawler.news.dto.JdbcProcess;
 import com.priester.crawler.news.pojo.News;
 import com.priester.crawler.news.utils.StripHtmlUtil;
 
@@ -63,9 +64,14 @@ public class PageProcessorWithWYCJ implements PageProcessor {
 		return site;
 	}
 
+	public static void Crawlers() {
+
+		Spider.create(new PageProcessorWithWYCJ()).addUrl("http://money.163.com/special/baoguagntai/").thread(10).run();
+
+	}
+	
 	public static void main(String[] args) {
-
-		Spider.create(new PageProcessorWithWYCJ()).addUrl("http://money.163.com/special/baoguagntai/").thread(1).run();
-
+		Crawlers();
+		
 	}
 }

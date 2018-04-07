@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.priester.crawler.news.dto.JdbcProcess;
 import com.priester.crawler.news.pojo.News;
 import com.priester.crawler.news.utils.StripHtmlUtil;
 
@@ -65,10 +66,13 @@ public class PageProcessorWithZGRB implements PageProcessor {
 		return site;
 	}
 
-	public static void main(String[] args) {
-
-		Spider.create(new PageProcessorWithZGRB()).addUrl("http://cnews.chinadaily.com.cn/node_1132703.htm").thread(1)
+	public static void Crawlers() {
+		Spider.create(new PageProcessorWithZGRB()).addUrl("http://cnews.chinadaily.com.cn/node_1132703.htm").thread(10)
 				.run();
 
+	}
+	
+	public static void main(String[] args) {
+		Crawlers();
 	}
 }

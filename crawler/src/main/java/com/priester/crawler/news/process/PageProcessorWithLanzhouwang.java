@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.priester.crawler.news.dto.JdbcProcess;
 import com.priester.crawler.news.pojo.News;
 import com.priester.crawler.news.utils.StripHtmlUtil;
 
@@ -30,7 +31,7 @@ public class PageProcessorWithLanzhouwang implements PageProcessor {
 		}
 
 		if (page.getUrl().regex("http://www.smelzh.gov.cn/qyxw/show.php\\?itemid=[0-9]{5}").match()) {
-			String title = page.getHtml().xpath("//[@class='title']/text()").toString();
+			String title = page.getHtml().xpath("//[@class='title']/text()").toString(); 
 			String content = StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='content']").toString());
 			String url = page.getUrl().toString();
 			String introduce = page.getHtml().xpath("//[@class='introduce']/text()").toString();
@@ -38,7 +39,7 @@ public class PageProcessorWithLanzhouwang implements PageProcessor {
 			if (StringUtils.isNotEmpty(title)) {
 				News news = new News(title, content, "中国小企业兰州网", url, introduce);
 				try {
-//					JdbcProcess.save(news);
+					JdbcProcess.save(news);
 //					 logger.info(news.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -53,8 +54,12 @@ public class PageProcessorWithLanzhouwang implements PageProcessor {
 		return site;
 	}
 
-	public static void main(String[] args) {
+	public static void Crawlers() {
 		Spider.create(new PageProcessorWithLanzhouwang()).addUrl("http://www.smelzh.gov.cn/qyxw/list.php?catid=32")
-				.thread(1).run();
+				.thread(10).run();
+	}
+	
+	public static void main(String[] args) {
+		Crawlers();
 	}
 }

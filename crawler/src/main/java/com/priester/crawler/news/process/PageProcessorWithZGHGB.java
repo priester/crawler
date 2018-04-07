@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.priester.crawler.news.dto.JdbcProcess;
 import com.priester.crawler.news.pojo.News;
 import com.priester.crawler.news.utils.StripHtmlUtil;
 
@@ -61,10 +62,13 @@ public class PageProcessorWithZGHGB implements PageProcessor {
 		return site;
 	}
 
-	public static void main(String[] args) {
+	public static void Crawlers() {
 
 		Spider.create(new PageProcessorWithZGHGB())
-				.addUrl("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp?id=6&pn=1").thread(1).run();
+				.addUrl("http://www.ccin.com.cn/templet/ccin/ShowClass.jsp?id=6&pn=1").thread(10).run();
 
+	}
+	public static void main(String[] args) {
+		Crawlers();
 	}
 }

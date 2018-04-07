@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.priester.crawler.news.dto.JdbcProcess;
 import com.priester.crawler.news.pojo.News;
 import com.priester.crawler.news.utils.StripHtmlUtil;
 
@@ -23,11 +24,9 @@ public class PageProcessorWithLanchang implements PageProcessor {
 		page.addTargetRequests(page.getHtml().links()
 				.regex("http://www.ncnews.com.cn/hd/ncyl/bgl/[0-9]{6}/t[0-9]{8}_[0-9]{6}.html").all());
 
-		// http://www.ncnews.com.cn/hd/ncyl/bgl/201606/t20160612_198790.html
 		if (page.getUrl().regex("http://www.ncnews.com.cn/hd/ncyl/bgl/[0-9]{6}/t[0-9]{8}_[0-9]{6}.html").match()) {
-			System.out.println(page.getHtml());
 			String title = page.getHtml().xpath("//[@class='read']/h3/text()").toString();
-			// System.out.println(StripHtmlUtil.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
+
 			String content = StripHtmlUtil.stripHtml(StripHtmlUtil
 					.stripHtml(page.getHtml().xpath("//[@class='TRS_Editor']/table/tbody/tr/td").toString()));
 			String url = page.getUrl().toString();
@@ -51,12 +50,16 @@ public class PageProcessorWithLanchang implements PageProcessor {
 		return site;
 	}
 
-	public static void main(String[] args) {
+	public static void Crawlers() {
 		Spider.create(new PageProcessorWithLanchang())
 		.addUrl("http://www.ncnews.com.cn/hd/ncyl/bgl/index.html").thread(1).run();
 		for (int i = 1; i < 6; i++) {
 			Spider.create(new PageProcessorWithLanchang())
-					.addUrl("http://www.ncnews.com.cn/hd/ncyl/bgl/index_" + i + ".html").thread(1).run();
+					.addUrl("http://www.ncnews.com.cn/hd/ncyl/bgl/index_" + i + ".html").thread(5).run();
 		}
+	}
+	
+	public static void main(String[] args) {
+		Crawlers();
 	}
 }

@@ -16,15 +16,6 @@ public class PageProcessorUniversities implements PageProcessor {
 
 	public void process(Page page) {
 
-		// FileWriter fw = null;
-		// BufferedWriter bw = null;
-		// try {
-		// fw = new
-		// FileWriter("D:\\crawler\\crawler\\src\\main\\java\\com\\priester\\crawler\\score\\score",
-		// true);
-
-		// bw = new BufferedWriter(fw);
-
 		List<String> specialtyScores = page.getHtml().xpath("//[@class='li-admissionLine']/tbody/tr").all();
 
 		String provice = "广东省";
@@ -32,7 +23,7 @@ public class PageProcessorUniversities implements PageProcessor {
 		String universities = page.getHtml().xpath("//[@class='li-school-label']/span/text()").toString();
 
 		for (String specialtyScoreDetail : specialtyScores) {
-			// try {
+
 			SpecialtyScoreDetail bean = new SpecialtyScoreDetail();
 			bean.setProvince(provice);
 			bean.setArtSci(ArtSci);
@@ -52,30 +43,8 @@ public class PageProcessorUniversities implements PageProcessor {
 
 			WriteTxt.addSpecialtyScoreDetail(bean);
 
-			// bw.write(bean.toString());
-			// System.out.println(bean);
-
-			// } catch (Exception e) {
-			// System.out.println(specialtyScoreDetail);
-
-			// }
-			// System.out.println(specialtyScoreDetail.split("\n")[1]);
-			// }
-
-			// } catch (IOException e) {
-			//
-			// e.printStackTrace();
-			// } finally {
-			// try {
-			// fw.close();
-			// bw.close();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-
 		}
 
-		// System.out.println(specialtyScores.get(0));
 	}
 
 	public Site getSite() {
